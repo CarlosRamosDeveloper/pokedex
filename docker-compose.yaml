@@ -9,5 +9,5 @@ services:
       - 27017:27017
     environment:
       MONGODB_DATABASE: nest-pokemon
-    volumenes:
+    volumes:
       - ./mongo:/data/db      
