@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { Model } from 'mongoose';
@@ -41,6 +41,8 @@ export class PokemonService {
       pokemon = await this.pokemonModel.findOne({ no: term });
     }
 
+    if (!pokemon) throw new NotFoundException(`Pokémon not found`);
+    
     return pokemon;
   }
 
