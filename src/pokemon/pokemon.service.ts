@@ -21,13 +21,8 @@ export class PokemonService {
       
       return pokemon;
     } catch (error) {
-      console.log(error)
-      if ( error.code === 11000 ) {
-        throw new BadRequestException(`Pokémon with name ${ JSON.stringify(error.keyValue)} exists in Database`);
-      }
-      throw new InternalServerErrorException(`Can't create this Pokémon. - Check server logs`);
+      this.handleExceptions(error, "create")
     }
-
   }
 
   findAll() {
@@ -66,15 +61,31 @@ export class PokemonService {
 
       return {...pokemon.toJSON(), ...updatePokemonDto};
     } catch (error) {      
-      if ( error.code === 11000 ) {
-        throw new BadRequestException(`Pokémon with name ${ JSON.stringify(error.keyValue)} exists in Database`);
-      }
-      throw new InternalServerErrorException(`Can't update this Pokémon. - Check server logs`);
-    }
-    
+      this.handleExceptions(error, "update")
+    }    
   }
 
   remove(id: number) {
     return `This action removes a #${id} pokemon`;
+  }
+
+  private handleExceptions (error: any, method: string) {
+    let errorMessage: string = "Can't ";
+
+    if (method === "create") {
+      errorMessage += "create ";
+    }
+    if (method === "update") {
+      errorMessage += "update ";
+    }
+    if (method === "delete") {
+      errorMessage += "delete ";
+    }
+    errorMessage += "this Pokémon. - Check server logs for more info"
+
+    if ( error.code === 11000 ) {
+      throw new BadRequestException(`Pokémon with name ${ JSON.stringify(error.keyValue)} exists in Database`);
+    }
+    throw new InternalServerErrorException(errorMessage);
   }
 }
