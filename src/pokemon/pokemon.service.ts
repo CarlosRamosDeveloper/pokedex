@@ -35,27 +35,24 @@ export class PokemonService {
     if ( !isNaN(+term)) {
       pokemon = await this.pokemonModel.findOne({ no: term });
     }
-
     if (!pokemon && isValidObjectId(term)) {
       pokemon = await this.pokemonModel.findById(term);
     }
-
     if (!pokemon) {
       pokemon = await this.pokemonModel.findOne({ name: term.toLocaleLowerCase().trim()});
     }
-
     if (!pokemon) throw new NotFoundException(`Pokémon not found`);
 
     return pokemon;
   }
 
-  async update(term: string, updatePokemonDto: UpdatePokemonDto) {
-    
+  async update(term: string, updatePokemonDto: UpdatePokemonDto) {    
     const pokemon = await this.findOne(term);
 
     if ( updatePokemonDto.name ) {
       updatePokemonDto.name = updatePokemonDto.name.toLocaleLowerCase();
     }
+
     try{
       await pokemon.updateOne( updatePokemonDto );
 
@@ -65,17 +62,19 @@ export class PokemonService {
     }    
   }
 
-  async remove(id: string) {        
-    const result = this.pokemonModel.findByIdAndDelete(id);
+  async remove(id: string) {              
+    const result = await this.pokemonModel.deleteOne({_id: id});
     console.log(`Pokemon with id ${id} has been exterminated`);
-
-    return result;
+    if ( result.deletedCount === 0 ) {
+      throw new BadRequestException(`Pokémon with id ${id} not found in Database`)
+    }
+    
+    return "Pokémon obliterated from existence";
   }
 
   private handleExceptions (error: any, method: string) {
     const CREATE_ERROR: string = "Can't create this pokémon. - Check server logs for more info";
-    const UPDATE_ERROR: string = "Can't update this pokémon. - Check server logs for more info";
-    const DELETE_ERROR: string = "Can't delete this pokémon. - Check server logs for more info";    
+    const UPDATE_ERROR: string = "Can't update this pokémon. - Check server logs for more info";    
     let errorMessage: string;
 
     if (method === "create") {
@@ -84,16 +83,9 @@ export class PokemonService {
     if (method === "update") {
       errorMessage = UPDATE_ERROR;
     }
-    if (method === "delete") {
-      errorMessage = DELETE_ERROR;
-    }
 
-    if ( error.code === 11000 ) {
-      if (method != "delete") {
-        throw new BadRequestException(`Pokémon with name ${ JSON.stringify(error.keyValue)} exists in Database`);
-      } else {
-        throw new BadRequestException(`Pokémon with name ${ JSON.stringify(error.keyValue)} does not exists in Database`);
-      }
+    if ( error.code === 11000 ) {      
+      throw new BadRequestException(`Pokémon with name ${ JSON.stringify(error.keyValue)} exists in Database`);    
     }
     throw new InternalServerErrorException(errorMessage);
   }
