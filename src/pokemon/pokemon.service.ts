@@ -65,26 +65,35 @@ export class PokemonService {
     }    
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} pokemon`;
+  async remove(id: string) {
+    const pokemon = await this.findOne(id);
+
+    await pokemon.deleteOne();
+    console.log(`Pokemon with id ${id} has been exterminated`);
   }
 
   private handleExceptions (error: any, method: string) {
-    let errorMessage: string = "Can't ";
+    const CREATE_ERROR: string = "Can't create this pokémon. - Check server logs for more info";
+    const UPDATE_ERROR: string = "Can't update this pokémon. - Check server logs for more info";
+    const DELETE_ERROR: string = "Can't delete this pokémon. - Check server logs for more info";    
+    let errorMessage: string;
 
     if (method === "create") {
-      errorMessage += "create ";
+      errorMessage = CREATE_ERROR;
     }
     if (method === "update") {
-      errorMessage += "update ";
+      errorMessage = UPDATE_ERROR;
     }
     if (method === "delete") {
-      errorMessage += "delete ";
+      errorMessage = DELETE_ERROR;
     }
-    errorMessage += "this Pokémon. - Check server logs for more info"
 
     if ( error.code === 11000 ) {
-      throw new BadRequestException(`Pokémon with name ${ JSON.stringify(error.keyValue)} exists in Database`);
+      if (method != "delete") {
+        throw new BadRequestException(`Pokémon with name ${ JSON.stringify(error.keyValue)} exists in Database`);
+      } else {
+        throw new BadRequestException(`Pokémon with name ${ JSON.stringify(error.keyValue)} does not exists in Database`);
+      }
     }
     throw new InternalServerErrorException(errorMessage);
   }
