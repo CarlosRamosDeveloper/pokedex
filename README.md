@@ -19,6 +19,11 @@ npm install -g @nestjs/cli
 ```
 docker-compose up -d
 ```
+5. Populate database from seed
+```
+127.0.0.1:3000/api/v2/seed
+```
+Remember, you can change the constant value "pokemonLimit" to another number to get that quantity of Pokémon to populate the database.
 
 # Stack:
 * MongoDB
