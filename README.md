@@ -23,7 +23,7 @@ docker-compose up -d
 ```
 127.0.0.1:3000/api/v2/seed
 ```
-Remember, you can change the constant value "pokemonLimit" to another number to get that quantity of Pokémon to populate the database.
+Remember, you can change the constant value "POKEMON_LIMIT" (seed.service.ts) to another number to get that quantity of Pokémon to populate the database.
 
 # Stack:
 * MongoDB
