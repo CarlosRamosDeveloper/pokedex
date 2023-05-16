@@ -15,7 +15,7 @@ yarn install
 ```
 npm install -g @nestjs/cli
 ```
-4. Lift the database
+4. Start the database
 ```
 docker-compose up -d
 ```
