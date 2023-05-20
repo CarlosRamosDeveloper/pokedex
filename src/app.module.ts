@@ -4,13 +4,16 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ServeStaticModule } from '@nestjs/serve-static';
 
+import { AppConfig } from './config/app.config';
 import { CommonModule } from './common/common.module';
 import { PokemonModule } from './pokemon/pokemon.module';
 import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),      
+    ConfigModule.forRoot({
+      load: [AppConfig]
+    }),      
     PokemonModule,
     MongooseModule.forRoot(process.env.MONGODB),
     ServeStaticModule.forRoot({
