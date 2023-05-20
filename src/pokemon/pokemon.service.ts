@@ -31,7 +31,9 @@ export class PokemonService {
     
     return this.pokemonModel.find()
       .limit(limit)
-      .skip(offset);  
+      .skip(offset)
+      .select("-__v")
+      .select("-_id");  
   }
 
   async findOne(term: string) {
