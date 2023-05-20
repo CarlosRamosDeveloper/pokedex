@@ -6,13 +6,15 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 
 import { AppConfig } from './config/app.config';
 import { CommonModule } from './common/common.module';
+import { JoiValidationSchema } from './config/joi.validation';
 import { PokemonModule } from './pokemon/pokemon.module';
 import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [AppConfig]
+      load: [AppConfig],
+      validationSchema: JoiValidationSchema
     }),      
     PokemonModule,
     MongooseModule.forRoot(process.env.MONGODB),
