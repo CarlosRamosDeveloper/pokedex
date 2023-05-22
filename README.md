@@ -34,6 +34,15 @@ yarn start:dev
 ```
 Remember, you can change the constant value "POKEMON_LIMIT" (seed.service.ts) to another number to get that quantity of Pokémon to populate the database.
 
+# Production Build
+1. Create ```.env.prod``` file.
+2. Fill the envoriment variables.
+3. Create a new image
+```
+docker-compose -f docker-compose.prod.yaml --env-file .env.prod up --build
+```
+
 # Stack:
 * MongoDB
 * NestJS
+
