@@ -18,8 +18,8 @@ export class PokemonService {
     private readonly pokemonModel: Model<Pokemon>,
     private readonly configService: ConfigService,
   ){
-    this.defaultLimit = this.configService.get("defaultLimit");
-    this.defaultOffset = this.configService.get("defaultOffset");
+    this.defaultLimit = this.configService.get<number>("defaultLimit");
+    this.defaultOffset = this.configService.get<number>("defaultOffset");
   }
   
   async create(createPokemonDto: CreatePokemonDto) {
